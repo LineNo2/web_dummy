@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<script src="js/cal_script.js"></script>
+	<link href="css/cal_style.css" rel="stylesheet" type="text/css">
+	<link href="css/main.css" rel="stylesheet" type="text/css">
+
+	<title>박격포 사격 제원 계산기</title>
+  </head>
+  <body onload="updateCalWindow()">
+	<div class="calTop" style="text-align:center">
+	  <h1>사격 제원 계산기</h1>
+	  <hr>
+	</div>
+	<div class="body" style="text-align:center">
+	  <form method="GET" action="html/set_mortar.html">
+		<h2> 박격포는 </h2> 
+		<input name="num_of_mortars" type="number" value="3" maxlength="1">
+		<h2> 문 </h2>
+		<hr>
+		<h2> 기준포는 </h2>
+		<input name="standard_mortar" type="number" value="2" maxlength="1">
+		<h2> 포 </h2>
+		<hr>
+		<input type="submit" value="포 설정">
+	  </form>
+	</div>
+  </body>
+</html>

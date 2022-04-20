@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link href="css/main.css" rel="stylesheet" type="text/css">
+	<link href="css/cal_style.css" rel="stylesheet" type="text/css">
+	<title>박격포 사격 제원 계산기</title>
+	<script src="js/request.js"></script>
+	<script>
+	  let infos_point_id = ["X","Y","H"];
+      let infos_point_placeholder = ["수평좌표","수직좌표","고도"];
+let korean_number =  ["하나","둘","삼","넷","오"];
+let num_of_mortars = request.getParameter('num_of_mortars');
+let standard_mortar = request.getParameter('standard_mortar');
+	  function printInputArea(idx){
+		let innerHTML = '';
+		if(idx == standard_mortar - 1) innerHTML = "<h2 style='color:#00FF66'>기준포 </h2>";
+		innerHTML += "<h2 class='Name'>"+ korean_number[idx] +"포</h2>";
+		innerHTML += `<div class="posInputContainer"><h3>X</h3><h3>Y</h3><h3>H</h3>`;
+		for(let i = 0 ; i < infos_point_id.length ; ++i){
+		  innerHTML += `<input type="number"  min="0" name="`+idx+`_`+infos_point_id[i]+`"placeholder="`+korean_number[idx]+`포 `+infos_point_placeholder[i]+`" max="99999"` + (idx == standard_mortar - 1 ? `` :  ( ` onclick="editFocusOn('` + idx + `_` +infos_point_id[i] + `')" readonly` ) ) +  `>`;
+		}
+		return innerHTML;
+	  }
+function pastePos(){
+  for(let i = 0 ; i < 3 ; ++i){
+	let cur_value = document.getElementsByName(standard_mortar-1 + "_" + infos_point_id[i])[0].value;
+	for(let j = 0 ; j < num_of_mortars ; ++j){
+	  document.getElementsByName(j+"_"+infos_point_id[i])[0].value = cur_value;
+	}
+  }
+}
+let former_name='0_X';
+function editFocusOn(name){
+  document.getElementsByName(former_name)[0].style = '';
+  former_name = name;
+  document.getElementById('focusName').value = korean_number[name[0]] +'포'+ name[2];
+  document.getElementsByName(name)[0].style = 'border-color:#FF6961;box-shadow: #FF6961 inset 0 0 20px 0;border-radius:5px';
+}
+function popup(id){
+  document.getElementsByClassName('body')[0].style.overflow = 'overlay'
+  document.getElementById(id).className = 'action';
+}
+function oper(action){
+  let cur_value = parseInt(document.getElementsByName(former_name)[0].value);
+  document.getElementsByName(former_name)[0].value = cur_value + (action == 1 ? 1 : -1);
+}
+function initBody(){
+  let innerHTML = `<div class="inputBody">` + printInputArea(standard_mortar-1) + `<input type="button" style="text-align:center;margin-top:5vh;" value="입력" onclick="pastePos();editFocusOn('0_X');popup('handler')"></div></div>`;
+  for(let i= 0 ; i < num_of_mortars; ++i){
+	if(i == standard_mortar - 1) continue;
+	innerHTML += `<div class="inputBody">`+ printInputArea(i) + '</div></div>';
+  }
+  innerHTML += `
+	<div id="handler" style="position:fixed;width:100%;;bottom:0" class="disabled">
+	<input type="submit" style="position:absolute;bottom:10vmax;font-size:3vmax;width:30vw;left:35vw;background-color:#00cc52;border-radius:10px;border-width:0 0 0 0; box-shadow:#00cc52 0 0 20px 0;" value="계산">
+	  <div class="pmbutton increase" onclick="oper(1)">+</div>
+	  <div class="pmbutton decrease" onclick="oper(0)">-</div>
+	  <input type="text" id="focusName"  value="..." style="position:absolute;background-color:#161616;border-radius:5px;bottom:5vmax;left:40vw;width:20vw;text-align:center;color:white;font-size:3vmax;" disabled>
+	</div>`;
+  document.getElementsByTagName('form')[0].innerHTML = innerHTML;
+}
+	</script>
+  </head>
+  <body onload="initBody()">
+	<div class="calTop" style="text-align:center">
+	  <h1>사격 제원 계산기</h1>
+	  <hr>
+	</div>
+	<div class="body" style="text-align:center; overflow: hidden; height: 70vh;">
+	  <form method="GET" action="/cal_fd.html">
+		<hr>
+	  </form>
+	</div>
+	  <div class="bottom" style="text-align:center;font-size:5vmin;margin-top:10vh;">
+		Copyright 2022. 21-71502052
+	  </div>
+  </body>
+</html>

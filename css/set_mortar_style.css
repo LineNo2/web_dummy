@@ -1,0 +1,11 @@
+.posInputContainer{
+  text-align:center;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+}
+.posInputContainer > input[type=number]{
+  text-align: center;
+  width : 80%;
+  margin: auto;
+}

@@ -1,0 +1,190 @@
+
+* {
+  box-sizing: border-box;
+}
+*:focus {
+    outline: none;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+hr{
+  margin-top : 3vh;
+  margin-bottom: 3vh;
+  color: white;
+  width: 90%;
+}
+body{
+  color : white;
+  background-color:#191919; 
+}
+
+input, select{
+  font-size: 2vw;
+  background-color: transparent;
+  border-width: 0 0 2px 0;
+  border-color : #00FF66;
+  color: white;
+}
+
+input[type=button],input[type=submit]{
+  font-size:5vmax;
+  background-color:#00cc52;
+  border-radius:10px;
+  border-width:0 0 0 0;
+  box-shadow:#00cc52 0 0 20px 0;
+}
+
+select{
+  background-color: #191919;
+}
+
+h1, h2, h3{
+  margin: 0 0 0 0;
+  display: inline-block;
+}
+
+h1{
+  font-size :3rem;
+}
+h2{
+  font-size : 2rem;
+}
+h3{
+  font-size : 1rem;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #00FF66;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #00FF66; 
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.pmbutton{
+  width:5vmax;
+  height:5vmax;
+  border-radius: 50%;
+  position: absolute;
+  text-align: center;
+  font-size:3vmax;
+  box-shadow: 5px 5px 10px 2px black;
+}
+.increase{
+  background-color:#00FF66;
+  right:20vw;
+  bottom: 5vmax;
+}
+.decrease{
+  background-color: #FF6961;
+  left: 20vw;
+  bottom:5vmax;
+}
+
+.action{
+  display: inherit;
+  animation-duration: 1.5s;
+  animation-name: slideup_fixed;
+}
+
+.disabled{
+  display: none;
+  opacity: 0;
+}
+
+@media (max-width:480px) {
+  .increase{
+	right:10vw;
+  }
+  .decrease{
+	left:10vw;
+  }
+  #focusName{
+	width:40vw !important;
+	left:30vw !important;
+  }
+}
+@media screen and (max-width: 992px) {
+  input{
+	font-size : 3.5vw;
+  }
+}
+@keyframes slideup_fixed{
+  0%{
+	opacity: 0;
+	bottom:-20vh;
+  }
+  70%{
+	bottom:-3vh;
+  }
+  100%{
+	opacity: 100%;
+	bottom:0;
+  }
+}
+
+
+
