@@ -3,14 +3,27 @@
   <head>
 	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
-	<script src="./solution_script.js"></script>
-	<link href="./cal_style.css" rel="stylesheet" type="text/css">
-	<link href="./solution_css.css" rel="stylesheet" type="text/css">
+	<script src="../js/canvas.js"></script>
+	<style>
+	html, body {
+  width:  100%;
+  height: 100%;
+  margin: 0;
+}</style>
 	<title>박격포 사격 제원 계산기</title>
   </head>
-  <body onload="draw()">
-	<canvas id="M17"></canvas>
+  <body onload="drawM17BackGround();drawM17Film();drawPointOnM17Film('T',15,10);textResolutionControl();">
+	<canvas id="M17BackGround" style="position:absolute;"></canvas>
+	<canvas id="M17Film" style="position:absolute;z-index:1;transform:rotate(0turn);"></canvas>
+	<h1 style="position: absolute;z-index:1;font-weight:normal;left:1000px;font-size:1.5rem;top:30px;">PLOTTING, BOARD:</h1>
+	<h1 style="position: absolute;z-index:1;font-weight:normal;left:1090px;font-size:1.5rem;top:55px;">M17</h1>
 	</div>
+	var canvas = document.getElementById('M17Film')
+	var ctx = canvas.getContext('2d');
+	ctx.clearRect(-800,-450,1600,900);
+	drawM17Film(Math.atan(-15/10));
+	drawPointOnM17Film('T',15,10);
+
   </body>
 </html>
 

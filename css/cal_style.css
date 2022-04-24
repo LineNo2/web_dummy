@@ -131,7 +131,7 @@
 	grid-column: 1 / 2;
 	grid-row : 3 / 4;
   }
-  .posInputContainer > input[type="button"]{
+  .posInputContainer > input[type=submit],input[type=button]{
 	grid-column: 1 / 3;
 	grid-row : 4 / 5;
   }

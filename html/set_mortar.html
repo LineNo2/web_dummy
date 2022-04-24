@@ -47,17 +47,20 @@ function oper(action){
   document.getElementsByName(former_name)[0].value = cur_value + (action == 1 ? 1 : -1);
 }
 function initBody(){
-  let innerHTML = `<div class="inputBody">` + printInputArea(standard_mortar-1) + `<input type="button" style="text-align:center;margin-top:5vh;" value="입력" onclick="pastePos();editFocusOn('0_X');popup('handler')"></div></div>`;
+  let innerHTML = `<div class="inputBody">` + printInputArea(standard_mortar-1) + 
+	( num_of_mortars != 1 
+	? `<input type="button" style="text-align:center;margin-top:5vh;" value="입력" onclick="pastePos();editFocusOn('0_X');popup('handler')">` 
+	  : `<input type="submit" style="text-align:center;margin-top:5vh"; value="계산">`) + `</div></div>`;
   for(let i= 0 ; i < num_of_mortars; ++i){
 	if(i == standard_mortar - 1) continue;
 	innerHTML += `<div class="inputBody">`+ printInputArea(i) + '</div></div>';
   }
   innerHTML += `
 	<div id="handler" style="position:fixed;width:100%;;bottom:0" class="disabled">
-	<input type="submit" style="position:absolute;bottom:10vmax;font-size:3vmax;width:30vw;left:35vw;background-color:#00cc52;border-radius:10px;border-width:0 0 0 0; box-shadow:#00cc52 0 0 20px 0;" value="계산">
+	<input type="submit" style="position:absolute;bottom:10vh;font-size:3vmax;width:30vw;left:35vw;background-color:#00cc52;border-radius:10px;border-width:0 0 0 0; box-shadow:#00cc52 0 0 20px 0;" value="계산">
 	  <div class="pmbutton increase" onclick="oper(1)">+</div>
 	  <div class="pmbutton decrease" onclick="oper(0)">-</div>
-	  <input type="text" id="focusName"  value="..." style="position:absolute;background-color:#161616;border-radius:5px;bottom:5vmax;left:40vw;width:20vw;text-align:center;color:white;font-size:3vmax;" disabled>
+	  <input type="text" id="focusName"  value="..." style="position:absolute;background-color:#161616;border-radius:5px;bottom:5vh;left:40vw;width:20vw;text-align:center;color:white;font-size:3vmax;" disabled>
 	</div>`;
   document.getElementsByTagName('form')[0].innerHTML = innerHTML;
 }

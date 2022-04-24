@@ -21,6 +21,13 @@ body{
   background-color:#191919; 
 }
 
+button{
+  color:white;
+  font-size: 3vmax;
+  border:none;
+  border-radius: 10px;
+}
+
 input, select{
   font-size: 2vw;
   background-color: transparent;
@@ -29,13 +36,26 @@ input, select{
   color: white;
 }
 
-input[type=button],input[type=submit]{
+input[type=button],input[type=submit] {
   font-size:5vmax;
   background-color:#00cc52;
   border-radius:10px;
   border-width:0 0 0 0;
   box-shadow:#00cc52 0 0 20px 0;
 }
+
+input[type=button]:hover,input[type=submit]:hover{
+  box-shadow:#00cc52 0 0 30px 0;
+  animation: opacity 1s infinite;
+}
+
+input[type=checkbox]{
+  appearance: none;
+  width:40vw;
+  height:10vh;
+}
+
+
 
 select{
   background-color: #191919;
@@ -76,54 +96,6 @@ body {
   height: 0;
 }
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #00FF66;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #00FF66; 
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
 .pmbutton{
   width:5vmax;
   height:5vmax;
@@ -155,6 +127,47 @@ input:checked + .slider:before {
   opacity: 0;
 }
 
+.toggleBody{
+  width:80%;
+  margin-left:10%;
+}
+
+.toggleboxTrue{
+  background-color:#00cc52;
+  box-shadow: #00cc52 0 0 20px 0;
+}
+
+.toggleboxFalse{
+  background-color: #FF6961;
+  box-shadow: color 0 0 20px 0;
+}
+
+.toggle{
+  background-color: gray;
+  border-radius:10px;
+  height: 10vh;
+}
+
+.toggle:hover{
+  animation: opacity 1s infinite;
+}
+
+.numInputGrid{
+  display:grid;
+  grid-template-columns: 5fr 2fr 1fr;
+  margin-left:10%;
+  width:80%
+}
+
+.numInputGrid > h2{
+  text-align: left;
+}
+
+.numInputGrid > input{
+  width: 100%;
+  font-size: 2rem;
+  text-align:center;
+}
 @media (max-width:480px) {
   .increase{
 	right:10vw;
@@ -186,5 +199,55 @@ input:checked + .slider:before {
   }
 }
 
+@keyframes slidedown_show{
+  0%{
+	opacity: 0;
+	margin-top: -9vh;
+  }
+  100%{
+	opacity:1;
+	margin-top : 0;
+  }
+}
+
+@keyframes slideup_unshow{
+  0%{
+	opacity: 1;
+	margin-top: 0vh;
+  }
+  100%{
+	opacity:0;
+	margin-top: -9vh;
+  }
+}
+
+
+@keyframes opacity{
+  0%{
+	opacity: 100%;
+  }
+  50%{
+	opacity: 50%;
+  }
+  100%{
+	opacity: 100%;
+  }
+}
+
+@keyframes opacity-shadow{
+  0%{
+	opacity: 0;
+  }
+  50%{
+	opacity:1;
+  }
+  99%{
+	opacity:0;
+	height: 100%;
+  }
+  100%{
+	height:0%;
+  }
+}
 
 

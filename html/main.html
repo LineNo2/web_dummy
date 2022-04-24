@@ -4,25 +4,52 @@
 	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
 	<script src="../js/cal_script.js"></script>
+	<script>
+	  let toggleValue = false;
+function toggleControl(id){
+  let togglebox = document.getElementById(id);
+  toggleValue = !toggleValue;
+  togglebox.className = 'togglebox' + (toggleValue ? 'True' : 'False');
+  togglebox.innerText = toggleValue ? '효력사' : '최초 사격';
+  document.getElementsByClassName('numInputGrid')[1].style = 
+	toggleValue ? 
+	'animation: slidedown_show 1.5s;' : 
+	'animation: slideup_unshow 1.5s'; 
+  document.getElementsByName('num_of_mortars')[0].value = toggleValue ? 3 : 1;
+  document.getElementsByName('standard_mortar')[0].value = toggleValue ? 2 : 1;
+}
+window.onload = function(){
+let e = document.getElementById('standardBody');
+e.addEventListener('animationend', (ev) => {
+   if (ev.animationName === "slideup_unshow") {
+    e.style.display = "none";
+  }
+}, false);
+}
+	</script>
 	<link href="../css/cal_style.css" rel="stylesheet" type="text/css">
 	<link href="../css/main.css" rel="stylesheet" type="text/css">
-
 	<title>박격포 사격 제원 계산기</title>
   </head>
-  <body onload="updateCalWindow()">
+  <body>
 	<div class="calTop" style="text-align:center">
 	  <h1>사격 제원 계산기</h1>
 	  <hr>
 	</div>
 	<div class="body" style="text-align:center">
+	  <button name="is_solo" id="is_solo" class="toggleboxFalse" style="width:40vw;height:10vh;margin-bottom:5vh;" onclick="toggleControl('is_solo')">최초 사격</button>
 	  <form method="GET" action="set_mortar.html">
-		<h2> 박격포는 </h2> 
-		<input name="num_of_mortars" type="number" value="3" maxlength="1">
-		<h2> 문 </h2>
+		<div class="numInputGrid">
+		  <h2> 박격포는 </h2> 
+		  <input name="num_of_mortars" type="number" value="1" max="10">
+		  <h2> 문 </h2>
+		</div>
 		<hr>
-		<h2> 기준포는 </h2>
-		<input name="standard_mortar" type="number" value="2" maxlength="1">
-		<h2> 포 </h2>
+		<div class="numInputGrid" id="standardBody"  style="display:none;">
+		  <h2> 기준포는 </h2> 
+		  <input name="standard_mortar" type="number" value="1" max="10">
+		  <h2> 포 </h2>
+		</div>
 		<hr>
 		<input type="submit" value="포 설정">
 	  </form>
