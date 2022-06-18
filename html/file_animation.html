@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <script src="../js/file_animation.js"></script>
+  <link href="../css/file_animation.css" rel="stylesheet" type="text/css">
+  <link href="../css/main.css" rel="stylesheet" type="text/css">
+  <title>파일 애니메이션 테스트</title>
+</head>
+<body onload=";">
+  <div class="fileTopperBody">
+	<input type="radio" name="fileIndex" id="idx-1" class="fileTop" style="z-index:4" value="1" onclick="openIdx(0);">
+	<input type="radio" name="fileIndex" id="idx-2" class="fileTop" style="z-index:3" value="2" onclick="openIdx(1);">
+	<input type="radio" name="fileIndex" id="idx-3" class="fileTop" style="z-index:2" value="3" onclick="openIdx(2);">
+	<input type="radio" name="fileIndex" id="idx-4" class="fileTop" style="z-index:1" value="4" onclick="openIdx(3);">
+  </div>
+  <div class="fileBody">1</div>
+  <div class="fileBody">2</div>
+  <div class="fileBody">3</div>
+  <div class="fileBody">4</div>
+  생각보다 cubic-beizer가 cpu를 존나 잡아먹으니까, 폰에서는 애니메이션을 보여주지는 말자.
+</body>
+</html>

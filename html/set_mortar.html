@@ -47,6 +47,8 @@ function oper(action){
   document.getElementsByName(former_name)[0].value = cur_value + (action == 1 ? 1 : -1);
 }
 function initBody(){
+  document.getElementById('standard_mortar').value = standard_mortar;
+  document.getElementById('num_of_mortars').value = num_of_mortars;
   let innerHTML = `<div class="inputBody">` + printInputArea(standard_mortar-1) + 
 	( num_of_mortars != 1 
 	? `<input type="button" style="text-align:center;margin-top:5vh;" value="입력" onclick="pastePos();editFocusOn('0_X');popup('handler')">` 
@@ -62,7 +64,7 @@ function initBody(){
 	  <div class="pmbutton decrease" onclick="oper(0)">-</div>
 	  <input type="text" id="focusName"  value="..." style="position:absolute;background-color:#161616;border-radius:5px;bottom:5vh;left:40vw;width:20vw;text-align:center;color:white;font-size:3vmax;" disabled>
 	</div>`;
-  document.getElementsByTagName('form')[0].innerHTML = innerHTML;
+  document.getElementsByTagName('form')[0].innerHTML += innerHTML;
 }
 	</script>
   </head>
@@ -73,7 +75,9 @@ function initBody(){
 	</div>
 	<div class="body" style="text-align:center; overflow: hidden; height: 70vh;">
 	  <form method="GET" action="cal_fd.html">
-		<hr>
+		<input type="hidden" id="num_of_mortars" name="num_of_mortars" value="">
+		<input type="hidden" id="standard_mortar" name="standard_mortar" value="">
+		
 	  </form>
 	</div>
 	  <div class="bottom" style="text-align:center;font-size:5vmin;margin-top:10vh;">

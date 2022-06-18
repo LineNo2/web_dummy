@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Carousel Test</title>
+ <script src="../js/carousel.js"></script>
+ <link href="../css/carousel.css" rel="stylesheet" type="text/css">
+ <link href="../css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="init();">
+	<div class="calTop" style="text-align:center;position:absolute;width:100%">
+	  <h1>사격 제원 계산기</h1>
+	  <p style="color:gray">수정 사격 제원 산출 </p>
+	  <hr>
+	</div>
+  <div class="carousel">
+  <button class="card card-left" id='card-0' onclick="moveCarousel(-1);">1</button>
+  <button class="card card-mid" id='card-1'></button>
+  <button class="card card-right" id='card-2' onclick="moveCarousel(1);">
+  </button>
+  <button class="card" id='card-3'>4</button>
+  <button class="card" id='card-4'>5</button>
+  </div>
+  <div id="handler">
+  <button class="arrow leftArrow" onclick="moveCarousel(-1)">&lt;</button>
+  <button class="arrow rightArrow" onclick="moveCarousel(1)">&gt;</button>
+  </div>
+</body>
+</html>

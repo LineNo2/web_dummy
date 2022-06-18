@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
 }
@@ -8,6 +7,24 @@
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: white;
+  /*border-radius: 0px 0px 10px 10px;*/
+}
+
+::-webkit-scrollbar-thumb {
+  background: #161616;
+  /*border-radius: 10px;*/
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #040404;
 }
 
 hr{
@@ -55,11 +72,10 @@ input[type=checkbox]{
   height:10vh;
 }
 
-
-
-select{
+ option{
   background-color: #191919;
 }
+
 
 h1, h2, h3{
   margin: 0 0 0 0;
@@ -152,6 +168,33 @@ body {
   animation: opacity 1s infinite;
 }
 
+.inputBody{
+  margin-top : 10vh;
+}
+
+.Name{
+  text-align: center;
+  width: 100%;
+  grid-column : 1 / 4;
+  grid-row: 1/ 3;
+}
+
+.posInputContainer{
+  text-align:center;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+}
+.posInputContainer > input{
+  text-align: center;
+  width : 80%;
+  margin: auto;
+}
+
+.posInputContainer > input[type="button"],input[type="submit"]{
+  grid-column: 1 / 4;
+}
+
 .numInputGrid{
   display:grid;
   grid-template-columns: 5fr 2fr 1fr;
@@ -178,6 +221,31 @@ body {
   #focusName{
 	width:40vw !important;
 	left:30vw !important;
+  }
+  .posInputContainer{
+	grid-template-columns: 1fr 5fr;
+	margin-top : 5vh;
+	grid-row-gap: 5vh;
+  }
+  .inputBody input{
+	font-size: 4vh;
+	text-align: left;
+  }
+  .posInputContainer > h3:nth-child(1){
+	grid-column: 1 / 2;
+	grid-row : 1 / 2;
+  }
+  .posInputContainer > h3:nth-child(2){
+	grid-column: 1 / 2;
+	grid-row : 2 / 3;
+  }
+  .posInputContainer > h3:nth-child(3){
+	grid-column: 1 / 2;
+	grid-row : 3 / 4;
+  }
+  .posInputContainer > input[type=submit], input[type=button]{
+	grid-column: 1 / 3 !important;
+	grid-row : 4 / 5;
   }
 }
 @media screen and (max-width: 992px) {

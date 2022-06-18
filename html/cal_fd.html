@@ -4,24 +4,27 @@
 	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
 	<script src="../js/cal_script.js"></script>
+	<script src="../js/carousel.js"></script>
 	<script src="../js/request.js"></script>
 	<link href="../css/cal_style.css" rel="stylesheet" type="text/css">
+	<link href="../css/carousel.css" rel="stylesheet" type="text/css">
 	<link href="../css/main.css" rel="stylesheet" type="text/css">
 	<title>박격포 사격 제원 계산기</title>
   </head>
-  <body onload="updateCalWindow()">
+  <body onload="init();">
 	<div class="calTop" style="text-align:center">
 	  <h1>사격 제원 계산기</h1>
-	  <p style="color:gray">최초 사격 제원 산출 </p>
+	  <p style="color:gray" id="subtitle">최초 사격 제원 산출 </p>
 	  <hr>
 	</div>
 	<div class="calBody">
-	  <h2>
-	<select name="calType" style="font-size:2rem" onchange="updateCalWindow();">
+	<select name="calType" style="font-size:2rem" onchange="init()">
 	  <option value="1">방안좌표법</option>
 	  <option value="2">극표정법</option>
 	  <option value="3">기지점 전이법</option>
 	</select>계산하기</h2>
+	  <div id="MPosInput" class="inputBody">
+	  </div>
 	  <div id="TPosInput" class="inputBody">
 	  </div>
 	  <div id="RPPosInput" class="inputBody">
@@ -30,50 +33,17 @@
 	  <div id="OPPosInput" class="inputBody">
 	  </div>
 	  <div id="OPDetailsInput" class="inputBody"></div>
-	  <div  id="MPosInput" class="inputBody">
-	  </div>
 	  <div id="OTAZInput" class="inputBody">
 		<h2 class="Name">OTAZ</h2>
 		<input type="number" class="posInput" min="0" id="OTAZ" placeholder="관목방위각" max="99999" style="text-align:center!important;width:26%;"></div>
-	  <div id="adjustInput" class="inputBody">
-	  </div>
 	  <div id="calButton"></div>
-	  <div id="calAdjustFireButton"></div>
 	  <hr>
-	  <div id="fireDataDisplay">
-		<h2> MTAZ </h2> 
-		<input type="input" id="MTAZ" value="" placeholder="사격방위각" disabled>
-		<h2> MTRN </h2>
-		<input type="input" id="MTRN" value="" placeholder="사거리" disabled>
-	  </div>
-	  <hr>
-	</div>
-	<form action="solution.html">
-	<input type="submit" value='해설' style="width: 100%;">
+	  <form action="solution.html">
+		<input type="submit" value='해설' style="width: 100%;">
 	</form>
-	<p style="color:transparent">
-	  Ctrl + O -> 이전위치로 계속 돌아가기.
-	  gg=G
-	  adjust fire
-	  fire for effect
-	  polar
-	  shift from know point
-	  grid
-		function init()
-		{
-		document.getElementById("OPX").value = 5340;
-		document.getElementById("OPY").value = 3220;
-		document.getElementById("OPH").value = 300;
-		document.getElementById("MX").value = 5250;
-		document.getElementById("MY").value = 3320;
-		document.getElementById("MH").value = 150;
-		document.getElementById("OTAZ").value = 1800;
-		document.getElementById("OTDS").value = 400;
-		document.getElementById("OPV_sign").value = 1;
-		document.getElementById("OPV").value = 0;
-		document.getElementById("adjustX").value = 60;
-		document.getElementById("adjustY").value = 40;
-		}init();</p>
-
+	</div>
+  <div class="carousel">
+  </div>
+  <div id="handler"></div>
   </body>
 </html>
