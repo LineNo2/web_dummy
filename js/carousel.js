@@ -74,7 +74,7 @@ function initCarousel(){
   document.getElementsByClassName('carousel')[0].innerHTML = str;
   document.getElementsByClassName('carousel')[0].style.height = '100vh';
   document.getElementById('card-' + (standard_mortar - 1 + num_of_mortars) % num_of_mortars).classList.add('card-mid');
-	insertMortarInformation(standard_mortar-1);
+	insertMortarInformation((standard_mortar-1 + num_of_mortars)%num_of_mortars);
 }
 
 function initCarouselFull(){
