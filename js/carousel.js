@@ -73,15 +73,15 @@ function initCarousel(){
   }
   document.getElementsByClassName('carousel')[0].innerHTML = str;
   document.getElementsByClassName('carousel')[0].style.height = '100vh';
-  document.getElementById('card-' + (standard_mortar - 1 + num_of_mortars) % num_of_mortars).classList.add('card-mid');
+  document.getElementById('card-' + ((standard_mortar - 1 + num_of_mortars) % num_of_mortars)).classList.add('card-mid');
 	insertMortarInformation((standard_mortar-1 + num_of_mortars)%num_of_mortars);
 }
 
 function initCarouselFull(){
   document.getElementById('card-' + (standard_mortar - 2 + num_of_mortars) % num_of_mortars).classList.add('card-left');
   document.getElementById('card-' + (standard_mortar + num_of_mortars) % num_of_mortars).classList.add('card-right');
-  document.getElementById('handler').innerHTML = `  <button class="arrow leftArrow" onclick="moveCarousel(-1)">&lt;</button>
-  <button class="arrow rightArrow" onclick="moveCarousel(1)">&gt;</button>`;
+  /*document.getElementById('handler').innerHTML = `  <button class="arrow leftArrow" onclick="moveCarousel(-1)">&lt;</button>
+  <button class="arrow rightArrow" onclick="moveCarousel(1)">&gt;</button>`;*/
   window.addEventListener("wheel", function(e){
 	pointerX = e.pageX;
 	pointerY = e.pageY;

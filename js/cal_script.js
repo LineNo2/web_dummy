@@ -32,8 +32,8 @@ let Mortar_arr = [];
 let OTAZ;
 
 function init(){
-  num_of_mortars = request.getParameter('num_of_mortars');
-  standard_mortar = request.getParameter('standard_mortar');
+  num_of_mortars = parseInt(request.getParameter('num_of_mortars'));
+  standard_mortar = parseInt(request.getParameter('standard_mortar'));
   document.getElementsByClassName('carousel')[0].innerHTML = `<button class="card" id="card-${standard_mortar-1}"></button>`;
   document.getElementsByClassName('carousel')[0].style.height = 0;
   for(var i = 0; i < num_of_mortars; ++i){
