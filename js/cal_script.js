@@ -1,8 +1,8 @@
 class Point {
   constructor(x, y, h) {
-	this.x = parseInt(x);
-	this.y = parseInt(y);
-	this.h = parseInt(h);
+	this.x = parseFloat(x);
+	this.y = parseFloat(y);
+	this.h = parseFloat(h);
   }
 };
 
@@ -84,11 +84,12 @@ function printInputArea(name){
   let innerHTML = "<h2 class='Name'>"+infos_title_dict[name]+"</h2>";
   innerHTML += `<div class="posInputContainer"><h3>X</h3><h3>Y</h3><h3>H</h3>`;
   for(let i = 0 ; i < infos_point_id.length ; ++i){
-	innerHTML += `<input type="number"  min="0" id="`+name+infos_point_id[i]+`"placeholder="`+infos_name_dict[name]+" "+infos_point_placeholder[i]+`" max="99999">`;
+	innerHTML += `<input type="number" step="0.1"  min="0" id="`+name+infos_point_id[i]+`"placeholder="`+infos_name_dict[name]+" "+infos_point_placeholder[i]+`" max="99999">`;
   }
   return innerHTML + "</div>";
 }
-function printAdjustArea(name,text){
+function printAdjustArea(name,text,type){
+  if(type == undefined) type = '좌표' ;
   let innerHTML =` <h2 class="Name">` + text  + `</h2>` + `<div class="adjustInputContainer">`;
   let axis = ['X', 'Y'];
   let axisKorean = [ ['우로','좌로',],['더하기','줄이기']];
@@ -98,7 +99,7 @@ function printAdjustArea(name,text){
 		  <option value="1">`+axisKorean[i][0]+`</option>
 		  <option value="-1">`+axisKorean[i][1]+`</option>
 		</select>
-		<input type="number"  min="0" id="adjust`+axis[i]+name+`" placeholder="수정 `+axis[i]+`좌표" max="99999">
+		<input type="number" step="0.1"  min="0" id="adjust`+axis[i]+name+`" placeholder="수정 `+axis[i]+type+`" max="99999">
 	  `
   }
   return innerHTML + '</div>';
@@ -108,12 +109,12 @@ function printInputAreaOP(){
   innerHTML += `<div id="OPDetailsContainer">
 	<h3>OTRN</h3>
 	<h3>OPV</h3>
-	<input type="number"  min="0" id="OTDS" placeholder="관목거리" max="99999">
+	<input type="number" step="0.1"  min="0" id="OTDS" placeholder="관목거리" max="99999">
 	<div> 
 	<select id="OPV_sign" style="grid-column : 2/3;"> 
 		  <option value="1">올려</option>
 		  <option value="-1">내려</option>
-		</select><input type="number"  min="0" id="OPV" style="grid-column:3/4" placeholder="수직전이량" max="999">`;
+		</select><input type="number" step="0.1"  min="0" id="OPV" style="grid-column:3/4" placeholder="수직전이량" max="999">`;
   return innerHTML + '</div></div>';
 }
 
@@ -240,7 +241,7 @@ function getAData(name){
   );
 }
 
-function calcuateAdjustValue(number){
+function calculateAdjustValue(number){
   let pointFromOTAZ = setPointFromCertainMill(
 	new AdjustData(
 	  document.getElementById('adjustX'+number).value * document.getElementById('adjustXSign'+number).value,
@@ -255,6 +256,28 @@ function calcuateAdjustValue(number){
   if(pointFromMTAZ.y < 0) document.getElementById('adjustYSign'+number+'calculated').value = -1;
   else document.getElementById('adjustYSign'+number+'calculated').value = 1;
   document.getElementById('adjustY'+number+'calculated').value = Math.abs(pointFromMTAZ.y);
+}
+
+function calculateNewMPos(number, flag){
+  let MTAZ = Mortar_arr[standard_mortar - 1].FData.MTAZ;
+  let newMPos = setPointFromCertainMill(
+	new AdjustData(
+	  document.getElementById('adjustX'+number+'MDistance').value * document.getElementById('adjustXSign'+number+'MDistance').value / 10,
+	  document.getElementById('adjustY'+number+'MDistance').value * document.getElementById('adjustYSign'+number+'MDistance').value / 10,
+	  MTAZ)
+  );// / 10의 이유 : 이친구는 미터로 받아서 
+  drawMortars(number,Math.millToRadians(MTAZ),newMPos.x,newMPos.y);
+  if(flag == undefined) return;
+  let list = ['x','y'];
+  for(let i = 0  ; i < list.length ; ++i){
+	Mortar_arr[number].M[list[i]] = Math.round(( newMPos[list[i]] + Mortar_arr[standard_mortar - 1].M[list[i]] ) * 10 )/10
+  }
+  Mortar_arr[number].M.h = Mortar_arr[standard_mortar - 1].M.h;
+  Mortar_arr[number].T = Mortar_arr[standard_mortar - 1].T;
+  Mortar_arr[number].FData = calGrid(number);
+  Mortar_arr[number].FData.LayingArgument = Math.round(Mortar_arr[standard_mortar - 1].FData.LayingArgument 
+	+ (MTAZ - Mortar_arr[number].FData.MTAZ)); 
+  insertMortarInformation(number);
 }
 
 function calculateCardData(MortarNumber){
@@ -309,6 +332,7 @@ function calMode(mode){
 	  break
   }
   Mortar_arr[standard_mortar-1].FData = FData;
+  Mortar_arr[standard_mortar-1].FData.LayingArgument = 2800;
   initCarousel();
   return;
 }

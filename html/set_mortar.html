@@ -9,20 +9,20 @@
 	<script src="../js/request.js"></script>
 	<script>
 	  let infos_point_id = ["X","Y","H"];
-      let infos_point_placeholder = ["수평좌표","수직좌표","고도"];
+let infos_point_placeholder = ["수평좌표","수직좌표","고도"];
 let korean_number =  ["하나","둘","삼","넷","오"];
 let num_of_mortars = request.getParameter('num_of_mortars');
 let standard_mortar = request.getParameter('standard_mortar');
-	  function printInputArea(idx){
-		let innerHTML = '';
-		if(idx == standard_mortar - 1) innerHTML = "<h2 style='color:#00FF66'>기준포 </h2>";
-		innerHTML += "<h2 class='Name'>"+ korean_number[idx] +"포</h2>";
-		innerHTML += `<div class="posInputContainer"><h3>X</h3><h3>Y</h3><h3>H</h3>`;
-		for(let i = 0 ; i < infos_point_id.length ; ++i){
-		  innerHTML += `<input type="number"  min="0" name="`+idx+`_`+infos_point_id[i]+`"placeholder="`+korean_number[idx]+`포 `+infos_point_placeholder[i]+`" max="99999"` + (idx == standard_mortar - 1 ? `` :  ( ` onclick="editFocusOn('` + idx + `_` +infos_point_id[i] + `')" readonly` ) ) +  `>`;
-		}
-		return innerHTML;
-	  }
+function printInputArea(idx){
+  let innerHTML = '';
+  if(idx == standard_mortar - 1) innerHTML = `<input type="button" style="text-align:center;" value="포간거리로 입력" onclick="checkIsPosValid(1);"><br><h2 style='color:#00FF66'>기준포 </h2>`;
+  innerHTML += "<h2 class='Name'>"+ korean_number[idx] +"포</h2>";
+  innerHTML += `<div class="posInputContainer"><h3>X</h3><h3>Y</h3><h3>H</h3>`;
+  for(let i = 0 ; i < infos_point_id.length ; ++i){
+	innerHTML += `<input type="number"  step="0.1" min="0" name="`+idx+`_`+infos_point_id[i]+`"placeholder="`+korean_number[idx]+`포 `+infos_point_placeholder[i]+`" max="99999"` + (idx == standard_mortar - 1 ? `` :  ( ` onclick="editFocusOn('` + idx + `_` +infos_point_id[i] + `')" readonly` ) ) +  `>`;
+  }
+  return innerHTML;
+}
 function pastePos(){
   for(let i = 0 ; i < 3 ; ++i){
 	let cur_value = document.getElementsByName(standard_mortar-1 + "_" + infos_point_id[i])[0].value;
@@ -43,19 +43,42 @@ function popup(id){
   document.getElementById(id).className = 'action';
 }
 function oper(action){
-  let cur_value = parseInt(document.getElementsByName(former_name)[0].value);
-  document.getElementsByName(former_name)[0].value = cur_value + (action == 1 ? 1 : -1);
+  let cur_value = parseFloat(document.getElementsByName(former_name)[0].value)*10;
+  document.getElementsByName(former_name)[0].value = (cur_value + (action == 1 ? 1 : -1))/10;
+}
+
+function checkIsPosValid(isSubmit){
+  let flag = false;
+  for(let i = 0 ; i < 3 ; ++i){
+	if(document.getElementsByName( (standard_mortar - 1) + "_" + infos_point_id[i])[0].value == "") flag = true;
+  }
+  if(flag) alert('좌표값을 다 입력해주세요!');
+  else {
+	if(isSubmit) {
+	  document.getElementById('is_MPos_setted').value='0';
+	  document.getElementsByTagName('form')[0].submit();
+	}
+	else {showAllMortars();pastePos();editFocusOn('0_X');popup('handler');}
+  }
+}
+
+
+function showAllMortars(){
+  let mortars = document.getElementsByClassName('inputBody');
+  for(let i = 0 ; i < num_of_mortars ; ++i){
+	mortars[i].style.opacity = 1;
+  }
 }
 function initBody(){
   document.getElementById('standard_mortar').value = standard_mortar;
   document.getElementById('num_of_mortars').value = num_of_mortars;
   let innerHTML = `<div class="inputBody">` + printInputArea(standard_mortar-1) + 
 	( num_of_mortars != 1 
-	? `<input type="button" style="text-align:center;margin-top:5vh;" value="입력" onclick="pastePos();editFocusOn('0_X');popup('handler')">` 
+	  ? `<input type="button" style="text-align:center;margin-top:5vh;" value="좌표로 입력" onclick="checkIsPosValid(0);">` 
 	  : `<input type="submit" style="text-align:center;margin-top:5vh"; value="계산">`) + `</div></div>`;
   for(let i= 0 ; i < num_of_mortars; ++i){
 	if(i == standard_mortar - 1) continue;
-	innerHTML += `<div class="inputBody">`+ printInputArea(i) + '</div></div>';
+	innerHTML += `<div class="inputBody" style="opacity:0">`+ printInputArea(i) + '</div></div>';
   }
   innerHTML += `
 	<div id="handler" style="position:fixed;width:100%;;bottom:0" class="disabled">
@@ -73,15 +96,15 @@ function initBody(){
 	  <h1>사격 제원 계산기</h1>
 	  <hr>
 	</div>
-	<div class="body" style="text-align:center; overflow: hidden; height: 70vh;">
+	<div class="body" style="text-align:center; overflow: hidden; height: 75vh;">
 	  <form method="GET" action="cal_fd.html">
 		<input type="hidden" id="num_of_mortars" name="num_of_mortars" value="">
 		<input type="hidden" id="standard_mortar" name="standard_mortar" value="">
-		
+		<input type="hidden" id="is_MPos_setted" name="is_MPos_setted" value="1">
+
 	  </form>
 	</div>
-	  <div class="bottom" style="text-align:center;font-size:5vmin;margin-top:10vh;">
-		Copyright 2022. 21-71502052
-	  </div>
+	<div class="bottom" style="text-align:center;font-size:5vmin;margin-top:10vh;">
+	</div>
   </body>
 </html>

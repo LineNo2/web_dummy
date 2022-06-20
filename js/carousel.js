@@ -9,6 +9,28 @@ function insertMortarInformationCoordinate(Point){
   return str + '</div>';
 }
 
+function loadMPosInsertWindow(number){
+  var str = '<div class="cardTitle">'
+  str += '<h2 class="name">' + (Mortar_arr[number].isStandard == true ? '기준포' : '날개포') + '</h2><br>';
+  str += '<h2 class="name">' + Mortar_arr[number].name + '포' + '</h2><br>';
+  str += '</div>'
+  //str += `<h3 id="card-${number}-MTAZ">`+ ' MTAZ : '  + Math.round(Mortar_arr[number].FData.MTAZ) +  '</h3></div>';
+  str += '<div class="cardBody">'
+  str += '<canvas id="MPos' + number + '" style="margin:auto;width:95%;height:50%;background-color:transparent;"></canvas>'
+  str += '<div class="cardBodyElement">';
+  str += '<input type="button" value="그리기" onclick="calculateNewMPos('+number+')">';
+  str += printAdjustArea(number+'MDistance','','미터');
+  str += `<input type="button" value="좌표 확정" onclick="calculateNewMPos(${number},1)">`   
+  //str += `<input type="button" value="계산" onclick="calculateCardData(${number})">`
+  str += '</div>'
+   document.getElementById('card-'+number).innerHTML = str + '</div>';
+  /*let list = ['X','Y'];
+  for(let i = 0 ; i < 2;  ++i){
+	let cur_elem = 'adjust'+list[i];
+	document.getElementById(cur_elem+number+'MDistance').oninput = function(){calculateNewMPos(number)};
+  }*/
+}
+
 function insertMortarInformation(number){
   var str = '<div class="cardTitle">'
   str += '<h2 class="name">' + (Mortar_arr[number].isStandard == true ? '기준포' : '날개포') + '</h2><br>';
@@ -17,7 +39,7 @@ function insertMortarInformation(number){
   str += '<div class="cardBody">';
   str += '<div class="cardBodyElement">';	
   str += '<h2 class="name">방렬편각</h2><br>';
-  str += `<h3 id="card-${number}-LayingArgument">` + (Mortar_arr[number].FData.LayingArgument = 2800) +  '</h3>';
+  str += `<h3 id="card-${number}-LayingArgument">` + Mortar_arr[number].FData.LayingArgument +  '</h3>';
   str += '</div>';
   str += '<div class="cardBodyElement">';	
   str += '<h2 class="name">MTRN</h2><br>';
@@ -28,16 +50,16 @@ function insertMortarInformation(number){
   str += '<span style="font-weight:1000">↓</span>';// mediaquery로 pc일땐 ->, 모바일 일때는 현재 상태로 만들기.
   str += printAdjustArea(number+'calculated','편의수정량');
   str += `<input type="button" value="계산" onclick="calculateCardData(${number})">`
-  if(number == standard_mortar - 1) str += '<input type="button" value="명중" id="hitButton" onclick="document.getElementById(`hitButton`).remove();initCarouselFull()">'
+  if(number == standard_mortar - 1) str += '<input type="button" value="명중" id="hitButton" onclick="initCarouselFull()">'
   str += '</div>';
   document.getElementById('card-'+number).innerHTML = str +'</div>';
   let list = ['X','Y'];
   for(let i = 0 ; i < 2;  ++i){
 	let cur_elem = 'adjust'+list[i];
-  document.getElementById(cur_elem+number).oninput = function(){calcuateAdjustValue(number)};
-  document.getElementById(cur_elem+'Sign'+number).oninput = function(){calcuateAdjustValue(number)};
-  document.getElementById(cur_elem+number+'calculated').readOnly = true;
-  document.getElementById(cur_elem+'Sign'+number+'calculated').disabled = true;
+	document.getElementById(cur_elem+number).oninput = function(){calculateAdjustValue(number)};
+	document.getElementById(cur_elem+'Sign'+number).oninput = function(){calculateAdjustValue(number)};
+	document.getElementById(cur_elem+number+'calculated').readOnly = true;
+	document.getElementById(cur_elem+'Sign'+number+'calculated').disabled = true;
   }
 }
 
@@ -69,9 +91,18 @@ function initCarouselFull(){
 	carouselScroll(e);
 	e.preventDefault();
   },{passive : false});
-  for(var i = 0  ; i < num_of_mortars ; ++i){
-	insertMortarInformation(i);
+  if(request.getParameter('is_MPos_setted') == 0){
+	for(var i = 0 ; i < num_of_mortars ; ++i){
+	  if(standard_mortar - 1 == i) continue;
+	  loadMPosInsertWindow(i);
+	}
   }
+  else{
+	for(var i = 0  ; i < num_of_mortars ; ++i){
+	  insertMortarInformation(i);
+	}
+  }
+  dragCarouselOnMobile(document.getElementsByClassName('card-mid')[0]);
 }
 
 function moveCarousel(direction){
@@ -85,14 +116,12 @@ function moveCarousel(direction){
 
   cards[(middle + totalCards)%totalCards].classList.remove('card-mid');
   cards[(middle + totalCards)%totalCards].classList.add('card-' + (direction == 1 ? 'left' : 'right'));
-  cards[(middle + totalCards)%totalCards].onclick = function() { moveCarousel(-direction); }
 
   //cards[(middle + direction*2 + totalCards)%totalCards].classList.remove('card-' + (direction == -1 ? 'right' : 'left'));
   cards[(middle + direction*2 + totalCards)%totalCards].classList.add('card-' + (direction == 1 ? 'right' : 'left'));
-  cards[(middle + direction*2 + totalCards)%totalCards].onclick = function() {moveCarousel(direction)};
 
   cards[(middle - direction + totalCards)%totalCards].classList.remove('card-' + (direction == -1 ? 'right' : 'left'));
-  cards[(middle - direction + totalCards)%totalCards].onclick = function() {};
+  dragCarouselOnMobile(document.getElementsByClassName('card-mid')[0]);
 }
 
 
@@ -107,4 +136,47 @@ function carouselScroll(event) {
 	moveCarousel(1);
   flag = false;
   setTimeout( () => {flag = true;}, 300);
+}
+
+function dragCarouselOnMobile(box){
+  box.addEventListener('touchmove', function(e) {
+	if(!flag) return;
+    var touchLocation = e.targetTouches[0];
+
+	if(Math.abs(touchLocation.pageX - window.innerWidth/2) > window.innerWidth/2*0.5){
+	  moveCarousel(touchLocation.pageX - window.innerWidth/2 > 0 ? -1 : 1);
+	  flag = false;
+	  setTimeout( () => {flag = true;}, 300);
+	}
+    //box.style.left = touchLocation.pageX + 'px';
+  })
+}
+
+function drawMortars(number,MTAZ,x,y){
+  var canvas = document.getElementById('MPos'+number);
+  var ctx = canvas.getContext('2d');
+  var width = canvas.width;
+  var height = canvas.height;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //var width = canvas.getBoundingClientRect().width;
+  //var height = canvas.getBoundingClientRect().height;
+  var font = width/10;
+  var coef = Math.max(Math.abs(x),Math.abs(y));
+  x = x/coef;
+  y = y/coef;
+  coef = height / 3;
+  ctx.beginPath();
+  ctx.font = font + "px arial";
+  ctx.textAlign = "center";
+  ctx.translate(width/2,height/2);
+  ctx.fillStyle = 'white';
+  ctx.fillText('M',0,0);
+  ctx.fillText('M',x*coef,-y*coef);
+  ctx.rotate(MTAZ);
+  ctx.strokeStyle = 'red';
+  ctx.moveTo(0,0);
+  ctx.lineTo(-width*Math.cos(MTAZ),-width*Math.sin(MTAZ));
+  ctx.stroke();
+  ctx.rotate(-MTAZ);
+  ctx.translate(-width/2,-height/2);
 }
