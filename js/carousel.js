@@ -127,6 +127,8 @@ function moveCarousel(direction){
 
 var flag = true;
 
+var mobileFlag = 0;
+
 function carouselScroll(event) {
   var y = event.deltaY;
   if(!flag) return;
@@ -139,17 +141,24 @@ function carouselScroll(event) {
 }
 
 function dragCarouselOnMobile(box){
-  box.addEventListener('touchmove', function(e) {
-	if(!flag) return;
+  function touchStart(e){
     var touchLocation = e.targetTouches[0];
-
-	if(Math.abs(touchLocation.pageX - window.innerWidth/2) > window.innerWidth/2*0.5){
-	  moveCarousel(touchLocation.pageX - window.innerWidth/2 > 0 ? -1 : 1);
-	  flag = false;
-	  setTimeout( () => {flag = true;}, 300);
+	if(Math.abs(touchLocation.pageX - window.innerWidth/2) > window.innerWidth/2*0.5)
+	  mobileFlag = ( touchLocation.pageX - window.innerWidth/2 > 0) ? -1 : 1;
+	else 
+	  mobileFlag = 0;
+	console.log(mobileFlag);
+  }
+  function touchEnd(){
+	if(mobileFlag != 0){
+	  moveCarousel(mobileFlag);
+	  box.removeEventListener('touchmove',touchStart);
+	  box.removeEventListener('touchend',touchEnd);
 	}
-    //box.style.left = touchLocation.pageX + 'px';
-  })
+  }
+  box.addEventListener('touchmove', touchStart);
+  
+  box.addEventListener('touchend' ,touchEnd);
 }
 
 function drawMortars(number,MTAZ,x,y){

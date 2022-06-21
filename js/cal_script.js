@@ -185,27 +185,35 @@ function calPolar(){
 	document.getElementById("OPV").value
   );
   Mortar_arr[standard_mortar-1].T = Target;
-  return calFireData(Target, Mortar);
+  let FData = calFireData(Target, Mortar);
+  fireLogger(standard_mortar -1 , FData);
+  return FData;
 }
 
 function calShift(){
   let RP = getSubjectPoint("RP");
   let Mortar = getSubjectPoint("M");
-  calFireData(RP, Mortar);
-  let Target = getNewTargetFromAdjust(RP,getAData("RP"));
+  let originalMTAZ = calFireData(RP,Mortar);
+  OTAZ = document.getElementById("OTAZ").value;
+  let AData = getAData("RP");
+  let Target = getNewTargetFromAdjust(RP, AData);
+  let FData = calFireData(Target, Mortar);
   Mortar_arr[standard_mortar-1].T = Target;
-  return calFireData(Target, Mortar);
+  FData.LayingArgument = 2800 + (originalMTAZ - FData.MTAZ);
+  FireLogger(Mortar, FData, AData);
+  return FData;
 }
 
 function calGrid(MortarNumber){
   let Target = Mortar_arr[MortarNumber].T;
   let Mortar = Mortar_arr[MortarNumber].M;
-  return calFireData(Target, Mortar);
+  let FData = calFireData(Target, Mortar);
+  fireLogger(MortarNumber, FData);
+  return FData;
 }
 
 function getNewTargetFromAdjust(Target, AData){
   OTAZ = AData.OTAZ;
-  //OTAZ = document.getElementById("OTAZ").value;
   let theta = Math.millToRadians(OTAZ);
   return new Point(
 	Target.x + AData.x/10 * Math.cos(theta) + AData.y/10 * Math.sin(theta),
@@ -241,7 +249,7 @@ function getAData(name){
   );
 }
 
-function calculateAdjustValue(number){
+function calculateAdjustValue(number, flag){//flag가 있으면 중간에 함수를 끝내고, 편의 수정량만 반환합니다.
   let pointFromOTAZ = setPointFromCertainMill(
 	new AdjustData(
 	  document.getElementById('adjustX'+number).value * document.getElementById('adjustXSign'+number).value,
@@ -250,6 +258,7 @@ function calculateAdjustValue(number){
 	Mortar_arr[number].FData.MTAZ
   );
   let pointFromMTAZ = readPointValueFromCertainMill(pointFromOTAZ);
+  if(flag == true) return pointFromMTAZ;
   if(pointFromMTAZ.x < 0) document.getElementById('adjustXSign'+number+'calculated').value = -1;
   else document.getElementById('adjustXSign'+number+'calculated').value = 1;
   document.getElementById('adjustX'+number+'calculated').value = Math.abs(pointFromMTAZ.x);
@@ -283,13 +292,15 @@ function calculateNewMPos(number, flag){
 function calculateCardData(MortarNumber){
   let originalMTAZ =  Mortar_arr[MortarNumber].FData.MTAZ;
   let originalLA = Mortar_arr[MortarNumber].FData.LayingArgument;
-  Mortar_arr[MortarNumber].FData = calAdjustFire(MortarNumber, getAData(MortarNumber));
+  let AData = getAData(MortarNumber);
+  let ADataAfter = calculateAdjustValue(MortarNumber, true);
+  Mortar_arr[MortarNumber].FData = calAdjustFire(MortarNumber, AData);
   Mortar_arr[MortarNumber].FData.LayingArgument = originalLA - (Mortar_arr[MortarNumber].FData.MTAZ - originalMTAZ);
   let list = ['MTAZ','LayingArgument','MTRN'];
   for(let i = 0 ; i < 3;  ++i){
 	document.getElementById('card-'+MortarNumber+'-'+list[i]).innerHTML = (i == 0 ? ' MTAZ : ' : '') + Math.round(Mortar_arr[MortarNumber].FData[list[i]]);
   }
-
+  fireLogger(MortarNumber, Mortar_arr[MortarNumber].FData, AData, ADataAfter);
 }
 
 function calAdjustFire(MortarNumber, Adata){
@@ -323,19 +334,41 @@ function calMode(mode){
 	case 0:
 	  Mortar_arr[standard_mortar-1].T = getSubjectPoint('T');
 	  FData = calGrid(standard_mortar-1);
+      FData.LayingArgument = 2800;
 	  break;
 	case 1:
 	  FData = calPolar();
+	  FData.LayingArgument = 2800;
 	  break;
 	case 2:
 	  FData = calShift();
 	  break
   }
   Mortar_arr[standard_mortar-1].FData = FData;
-  Mortar_arr[standard_mortar-1].FData.LayingArgument = 2800;
   initCarousel();
   return;
 }
 
+let fireLog = [];
 
-
+function fireLogger(number, FData, AData, ADataAfter){
+  let curTime = new Date();
+  let Elem = {
+	'Time' : curTime,
+	'Mortar' : artilleryman_number[number],
+	'MTAZ' : FData.MTAZ,
+	'MTRN' : FData.MTRN,
+	'LayingArgument': FData.LayingArgument,
+  };
+  if(AData != undefined){
+	Elem.Adjust_x  = AData.x;
+	Elem.Adjust_y  = AData.y;
+  }
+  if(ADataAfter != undefined){
+	Elem.AdjustAfter_x = ADataAfter.x;
+	Elem.AdjustAfter_y = ADataAfter.y;
+  }
+  fireLog.push(Elem);	
+  console.log(fireLog.length + '번째 사격');
+  console.log(Elem);
+}
