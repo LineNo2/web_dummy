@@ -173,22 +173,31 @@ function drawM17Film(rotate){
   ctx.arc(0, 0, radius * 0.02, 0, 2 * Math.PI);
   ctx.fillStyle = 'gray';
   ctx.fill();
+  ctx.rotate(-rotate);
 }
 function drawPointOnM17Film(name, x, y){
   var ctx = document.getElementById('M17Film').getContext('2d');
   var radius = ctx.canvas.width/4;
+  x *= resolution;
+  y *= resolution;
   y = -y;
   ctx.beginPath();
   ctx.arc(x*10,y*10,0.01 * radius, 0, 2*Math.PI);
+  ctx.textAlign = 'left'
   ctx.fontSize = 0.05*radius +'px san-serif';
   ctx.fillStyle = 'black';
   ctx.fillText(name, x*10 + radius *0.02, y*10);
   ctx.fill();
 }
-function drawLineToPointOnM17Film(x,y){
+function drawLineToPointOnM17Film(st_x, st_y, ed_x, ed_y){
   var ctx = document.getElementById('M17Film').getContext('2d');
+  st_x *= resolution;
+  st_y *= resolution;
+  ed_x *= resolution;
+  ed_y *= resolution;
   ctx.beginPath();
-  ctx.moveTo(0,0);
-  ctx.lineTo(x*10,-y*10);
+  ctx.moveTo(st_x*10,-st_y*10);
+  ctx.lineTo(ed_x*10,-ed_y*10);
+  ctx.moveTo(-st_x*10,-st_y*10);
   ctx.stroke();
 }

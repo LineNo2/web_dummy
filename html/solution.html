@@ -4,26 +4,69 @@
 	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
 	<script src="../js/canvas.js"></script>
+	<script src="../js/solution_script.js"></script>
+	<script src="../js/request.js"></script>
 	<style>
 	html, body {
-  width:  100%;
-  height: 100%;
-  margin: 0;
-}</style>
+	  scroll-behavior: smooth;
+	  margin: 0;
+		overflow: hidden;
+	}
+	#M17-display{
+	      -moz-transform: scale(0.6, 0.6); /* Moz-browsers */
+    zoom: 0.6; /* Other non-webkit browsers */
+    zoom: 60%; /* Webkit browsers */
+	  overflow-x: scroll;
+	  height:100vh;
+	  position: relative;
+	}
+	#controller{
+	  z-index:3;
+	  bottom:0;
+	  height:auto;
+	  width: 100%;
+	  text-align: center;
+	  position: absolute;
+	}
+	.control-button{
+	  width: 25%;
+	}
+	#script-display{
+	  opacity: 0.9;
+	  bottom: 0 ;
+	  background-color: #333;
+	  position: absolute;
+	  z-index: 2;
+	  width:100%;
+	  text-align: center;
+	  font-size:2.5rem;
+	}
+	#script-display > p{
+	  color: white;
+	  margin-bottom: 10vh;
+	}
+	</style>
 	<title>박격포 사격 제원 계산기</title>
   </head>
-  <body onload="drawM17BackGround();drawM17Film();drawPointOnM17Film('T',15,10);textResolutionControl();">
-	<canvas id="M17BackGround" style="position:absolute;"></canvas>
-	<canvas id="M17Film" style="position:absolute;z-index:1;transform:rotate(0turn);"></canvas>
-	<h1 style="position: absolute;z-index:1;font-weight:normal;left:1000px;font-size:1.5rem;top:30px;">PLOTTING, BOARD:</h1>
-	<h1 style="position: absolute;z-index:1;font-weight:normal;left:1090px;font-size:1.5rem;top:55px;">M17</h1>
+  <body onload="init()">
+	<div id="M17-display">
+	  <canvas id="M17BackGround" style="position:absolute;"></canvas>
+	  <canvas id="M17Film" style="position:absolute;z-index:1;transition: all 1.5s cubic-bezier(1,0,0,1)"></canvas>
+	  <h1 style="position: absolute;z-index:1;font-weight:normal;left:1000px;font-size:1.5rem;top:30px;">PLOTTING, BOARD:</h1>
+	  <h1 style="position: absolute;z-index:1;font-weight:normal;left:1090px;font-size:1.5rem;top:55px;">M17</h1>
 	</div>
-	var canvas = document.getElementById('M17Film')
+	<div id="controller">
+	</div>
+	<div id="script-display">
+	  <p>
+		버튼을 누르면 해설을 볼 수 있습니다.
+	  </p>
+	</div>
+	<!--var canvas = document.getElementById('M17Film')
 	var ctx = canvas.getContext('2d');
 	ctx.clearRect(-800,-450,1600,900);
 	drawM17Film(Math.atan(-15/10));
-	drawPointOnM17Film('T',15,10);
-
+	drawPointOnM17Film('T',15,10);-->
   </body>
 </html>
 

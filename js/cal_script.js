@@ -163,6 +163,7 @@ function polarToTarget(OP, OTAZ, OTDS, OTV){
 	y + OTDS / 10 * Math.cos(Math.millToRadians(OTAZ)),
 	h + OTV
   );
+  solutionParameter = `window.open('solution.html?OTAZ=${OTAZ}&OTDS=${OTDS}&OTV=${OTV}&Type=Polar`;
   return Target;
 }
 
@@ -186,6 +187,7 @@ function calPolar(){
   );
   Mortar_arr[standard_mortar-1].T = Target;
   let FData = calFireData(Target, Mortar);
+  solutionParameter += `&OP_X=${OP.x-Mortar.x}&OP_Y=${OP.y-Mortar.y}&OP_H=${OP.h-Mortar.h}&T_X=${Math.round(Target.x-Mortar.x)}&T_Y=${Math.round(Target.y-Mortar.y)}&T_H=${Target.h-Mortar.h}&MTAZ=${FData.MTAZ}&MTRN=${FData.MTRN}')`;
   fireLogger(standard_mortar -1 , FData);
   return FData;
 }
@@ -200,20 +202,23 @@ function calShift(){
   let FData = calFireData(Target, Mortar);
   Mortar_arr[standard_mortar-1].T = Target;
   FData.LayingArgument = 2800 + (originalMTAZ - FData.MTAZ);
-  FireLogger(Mortar, FData, AData);
+  fireLogger(standard_mortar-1, FData, AData);
+  solutionParameter='alert("그냥 수정사랑 똑같다. 알아서 공부하도록 하자")';
   return FData;
 }
 
-function calGrid(MortarNumber){
+function calGrid(MortarNumber, flag){// flag가 1이면 사향속 변경하는 과정임.
   let Target = Mortar_arr[MortarNumber].T;
   let Mortar = Mortar_arr[MortarNumber].M;
   let FData = calFireData(Target, Mortar);
-  fireLogger(MortarNumber, FData);
+  if(flag != 1) fireLogger(MortarNumber, FData);
+  solutionParameter =
+	`window.open('solution.html?T_X=${Target.x-Mortar.x}&T_Y=${Target.y-Mortar.y}&T_H=${Target.h-Mortar.h}&MTAZ=${FData.MTAZ}&MTRN=${FData.MTRN}&Type=Grid');`
   return FData;
 }
 
 function getNewTargetFromAdjust(Target, AData){
-  OTAZ = AData.OTAZ;
+  let OTAZ = AData.OTAZ;
   let theta = Math.millToRadians(OTAZ);
   return new Point(
 	Target.x + AData.x/10 * Math.cos(theta) + AData.y/10 * Math.sin(theta),
@@ -283,7 +288,7 @@ function calculateNewMPos(number, flag){
   }
   Mortar_arr[number].M.h = Mortar_arr[standard_mortar - 1].M.h;
   Mortar_arr[number].T = Mortar_arr[standard_mortar - 1].T;
-  Mortar_arr[number].FData = calGrid(number);
+  Mortar_arr[number].FData = calGrid(number, 1);
   Mortar_arr[number].FData.LayingArgument = Math.round(Mortar_arr[standard_mortar - 1].FData.LayingArgument 
 	+ (MTAZ - Mortar_arr[number].FData.MTAZ)); 
   insertMortarInformation(number);
@@ -291,6 +296,7 @@ function calculateNewMPos(number, flag){
 
 function calculateCardData(MortarNumber){
   let originalMTAZ =  Mortar_arr[MortarNumber].FData.MTAZ;
+  let originalMTRN = Mortar_arr[MortarNumber].FData.MTRN;
   let originalLA = Mortar_arr[MortarNumber].FData.LayingArgument;
   let AData = getAData(MortarNumber);
   let ADataAfter = calculateAdjustValue(MortarNumber, true);
@@ -300,7 +306,7 @@ function calculateCardData(MortarNumber){
   for(let i = 0 ; i < 3;  ++i){
 	document.getElementById('card-'+MortarNumber+'-'+list[i]).innerHTML = (i == 0 ? ' MTAZ : ' : '') + Math.round(Mortar_arr[MortarNumber].FData[list[i]]);
   }
-  fireLogger(MortarNumber, Mortar_arr[MortarNumber].FData, AData, ADataAfter);
+  fireLogger(MortarNumber, Mortar_arr[MortarNumber].FData, AData, ADataAfter, originalMTAZ, originalLA, originalMTRN);
 }
 
 function calAdjustFire(MortarNumber, Adata){
@@ -322,8 +328,8 @@ function calFireData(Target, Mortar){
   if(y < 0) fixMTAZ = 3200;
   else if(x < 0 && y >= 0) fixMTAZ = 6400;
   let FData = new FireData(
-	Math.radiansToMill(Math.atan(x/y)) + fixMTAZ,
-	Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) * 10 + h / 2
+	Math.round(Math.radiansToMill(Math.atan(x/y)) + fixMTAZ),
+	Math.round(Math.sqrt(Math.pow(x,2) + Math.pow(y,2)) * 10 + (h / 2))
   );
   return FData;
 }
@@ -351,14 +357,15 @@ function calMode(mode){
 
 let fireLog = [];
 
-function fireLogger(number, FData, AData, ADataAfter){
+function fireLogger(number, FData, AData, ADataAfter, originalMTAZ, originalLA, originalMTRN){
   let curTime = new Date();
   let Elem = {
-	'Time' : curTime,
-	'Mortar' : artilleryman_number[number],
+	'Time' : `${curTime.getHours()}시 ${curTime.getMinutes()}분 ${curTime.getSeconds()}초`,
+	'Mortar' : artilleryman_number[number] +'포',
+	'MortarType' : (standard_mortar - 1 == number ? '기준포' : '날개포'),
 	'MTAZ' : FData.MTAZ,
 	'MTRN' : FData.MTRN,
-	'LayingArgument': FData.LayingArgument,
+	'LayingArgument': FData.LayingArgument == undefined ? 2800 : FData.LayingArgument,
   };
   if(AData != undefined){
 	Elem.Adjust_x  = AData.x;
@@ -368,7 +375,83 @@ function fireLogger(number, FData, AData, ADataAfter){
 	Elem.AdjustAfter_x = ADataAfter.x;
 	Elem.AdjustAfter_y = ADataAfter.y;
   }
+  if(originalMTAZ != undefined){
+	Elem.originalMTAZ = originalMTAZ;
+	Elem.originalLA = originalLA;
+	Elem.originalMTRN = originalMTRN;
+  }
   fireLog.push(Elem);	
   console.log(fireLog.length + '번째 사격');
   console.log(Elem);
+  if(fireLog.length == 1) return;
+  let newLog = document.createElement('p');
+  newLog.classList.add('fire-log-data');
+  newLog.innerHTML += logDataToTable(fireLog.length - 1);
+  document.getElementById('fire-log-display').appendChild(newLog);
+}
+
+function logDataToTable(number){
+  fireLogData = fireLog[number];
+  let innerHTML = `<p class="fire-log-data-number">${number+1}</p>`;
+  let dict = {'Time' : '시간', 'Mortar' : '포', 'MTAZ' : '사격방위각', 'MTRN' : '사거리', 'LayingArgument' : '방렬편각'};
+  let dictKeys = Object.keys(dict);
+  let solutionParameter = '';
+  solutionParameter = '?OTAZ=' + OTAZ;
+  for(let i = 0 ; i < dictKeys.length ; ++i){
+	innerHTML += `<p class="fire-log-data-title">${dict[dictKeys[i]]}</p>`;
+	innerHTML += `<p class="fire-log-data-info">`;
+	let list = ['MTAZ', 'MTRN'];
+	for(let j = 0 ; j < 2; ++j){
+	  innerHTML += `${( (dictKeys[i] == list[j] && fireLogData['original'+list[j]] != undefined) ? fireLogData['original' + list[j]] + ' ->' : '')}`;
+	}
+	innerHTML +=`
+	 ${ ( (dictKeys[i] == 'LayingArgument' && fireLogData.originalLA != undefined) ? fireLogData.originalLA + ' ->' : '')} ${fireLogData[dictKeys[i]]}</p>`;
+  }
+  if(fireLogData.Adjust_x != undefined && fireLogData.AdjustAfter_x != undefined){
+	AD_x = fireLogData.Adjust_x;
+	AD_y = fireLogData.Adjust_y;
+	innerHTML += `<p class="fire-log-data-title">수정량</p>`;
+	innerHTML += `<p class="fire-log-data-info">(
+	  ${ (AD_x < 0 ? "좌" : "우" ) + Math.abs(AD_x)}
+	  ,${ (AD_y < 0 ? "줄이기" : "늘리기") + Math.abs(AD_y)})
+	  </p>`;
+	ADA_x = fireLogData.AdjustAfter_x;
+	ADA_y = fireLogData.AdjustAfter_y;
+	innerHTML += `<p class="fire-log-data-title">편의수정량</p>`;
+	innerHTML += `<p class="fire-log-data-info">(
+	  ${ (ADA_x < 0 ? "좌" : "우" ) + Math.abs(ADA_x)}
+	  ,${ (ADA_y < 0 ? "줄이기" : "늘리기") + Math.abs(ADA_y)})
+	  </p>`;
+	let list =['_x','_y','A_x','A_y'];
+	for(let i = 0 ; i < list.length ; ++i){
+	solutionParameter += '&AD' + list[i] + '=' +  eval('AD'+list[i]);
+	}
+	solutionParameter += '&originalMTAZ=' + fireLogData.originalMTAZ;
+	solutionParameter += '&originalLA=' + fireLogData.originalLA;
+	solutionParameter += '&originalMTRN=' + fireLogData.originalMTRN;
+	solutionParameter += '&MTAZ=' + fireLogData.MTAZ;
+	solutionParameter += '&LayingArgument=' + fireLogData.LayingArgument;
+	solutionParameter += '&MTRN=' + fireLogData.MTRN;
+	solutionParameter += '&Type=Shift';
+	
+  }
+  innerHTML += `<button class="fire-log-data-solution" onclick="window.open('/solution.html${solutionParameter}')">해설</button>`
+  return innerHTML;
+}
+
+function dropLog(flag){ // flag ; true -> 내리기, false -> 올리기
+  let body = document.getElementById('fire-log');
+  let button = document.getElementById('fire-log-display-button');
+  if(flag){
+    body.style.transform = 'translateY(-20vh)';
+	button.style.transform = 'translateY(-20vh)';
+	button.value = '△';
+	button.onclick = function() {dropLog(0);}
+  }
+  else{
+	body.style.transform = 'translateY(-100vh)';
+	button.style.transform = 'translateY(-100vh)';
+	button.value = '▽';
+	button.onclick = function() {dropLog(1);}
+  }
 }

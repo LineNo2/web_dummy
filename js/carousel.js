@@ -35,7 +35,7 @@ function insertMortarInformation(number){
   var str = '<div class="cardTitle">'
   str += '<h2 class="name">' + (Mortar_arr[number].isStandard == true ? '기준포' : '날개포') + '</h2><br>';
   str += '<h2 class="name">' + Mortar_arr[number].name + '포' + '</h2><br>';
-  str += `<h3 id="card-${number}-MTAZ">`+ ' MTAZ : '  + Math.round(Mortar_arr[number].FData.MTAZ) +  '</h3></div>';
+  str += `<h3 id="card-${number}-MTAZ">`+ ' MTAZ : '  + Mortar_arr[number].FData.MTAZ  +  '</h3></div>';
   str += '<div class="cardBody">';
   str += '<div class="cardBodyElement">';	
   str += '<h2 class="name">방렬편각</h2><br>';
@@ -43,14 +43,14 @@ function insertMortarInformation(number){
   str += '</div>';
   str += '<div class="cardBodyElement">';	
   str += '<h2 class="name">MTRN</h2><br>';
-  str += `<h3 id="card-${number}-MTRN">` + Math.round(Mortar_arr[number].FData.MTRN) +  '</h3>';
+  str += `<h3 id="card-${number}-MTRN">` + Mortar_arr[number].FData.MTRN  +  '</h3>';
   str += '</div>';
   str += '<div class="cardBodyElement">';
   str += printAdjustArea(number,'수정값');
   str += '<span style="font-weight:1000">↓</span>';// mediaquery로 pc일땐 ->, 모바일 일때는 현재 상태로 만들기.
   str += printAdjustArea(number+'calculated','편의수정량');
   str += `<input type="button" value="계산" onclick="calculateCardData(${number})">`
-  if(number == standard_mortar - 1) str += '<input type="button" value="명중" id="hitButton" onclick="initCarouselFull()">'
+  if(number == standard_mortar - 1) str += '<input type="button" value="명중" id="hitButton" onclick="document.getElementById(`hitButton`).remove();initCarouselFull()">'
   str += '</div>';
   document.getElementById('card-'+number).innerHTML = str +'</div>';
   let list = ['X','Y'];
@@ -67,11 +67,22 @@ function initCarousel(){
   OTAZ = document.getElementById('OTAZ').value;
   document.getElementsByClassName('calBody')[0].innerHTML = '';
   document.getElementsByClassName('calTop')[0].style = 'text-align:center;position:absolute;width:100%';
-  var str = '';
+  var str = ``;
   for(var i = 0 ; i < Mortar_arr.length ; ++i){
 	str += '<button class="card" id="card-' + i + '"></button>';
   }
-  document.getElementsByClassName('carousel')[0].innerHTML = str;
+  document.getElementsByClassName('carousel')[0].innerHTML = str + `
+  <div id="fire-log">
+    <div id="fire-log-display">
+	<div class="fire-log-data">
+	${logDataToTable(0)}
+	</div>
+	</div>
+  </div>
+  <input id="fire-log-display-button" type="button" value="▽" onclick="dropLog(1)">
+  `;
+  document.getElementsByClassName('fire-log-data-solution')[0].setAttribute('onclick',  solutionParameter);
+  console.log(document.getElementsByClassName('fire-log-data-solution')[0].onclick);
   document.getElementsByClassName('carousel')[0].style.height = '100vh';
   document.getElementById('card-' + ((standard_mortar - 1 + num_of_mortars) % num_of_mortars)).classList.add('card-mid');
 	insertMortarInformation((standard_mortar-1 + num_of_mortars)%num_of_mortars);
@@ -157,7 +168,6 @@ function dragCarouselOnMobile(box){
 	}
   }
   box.addEventListener('touchmove', touchStart);
-  
   box.addEventListener('touchend' ,touchEnd);
 }
 
