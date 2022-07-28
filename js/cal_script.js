@@ -435,7 +435,7 @@ function logDataToTable(number){
 	solutionParameter += '&Type=Shift';
 	
   }
-  innerHTML += `<button class="fire-log-data-solution" onclick="window.open('/solution.html${solutionParameter}')">해설</button>`
+  innerHTML += `<button class="fire-log-data-solution" onclick="window.open('solution.html${solutionParameter}')">해설</button>`
   return innerHTML;
 }
 
